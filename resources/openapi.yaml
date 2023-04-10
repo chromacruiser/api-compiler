@@ -1,0 +1,53 @@
+openapi: 3.0.3
+info:
+  title: Arduino to Intel HEX Compiler API
+  description: An API to Compile Arduino code projects (in ZIP format) to Intel HEX files.
+  version: 1.0.0
+servers:
+  - url: https://api.example.com/v1
+paths:
+  /example/compile:
+    get:
+      summary: Get an example Intel HEX file
+      operationId: ExampleCompile
+      responses:
+        '200':
+          description: Successfully retrieved the example Intel HEX file
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '500':
+          description: Internal Server Error - An error occurred while retrieving the example file
+
+
+  /compile:
+    post:
+      summary: Compile an AVR project to an Intel HEX file
+      operationId: Compile
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                project:
+                  type: string
+                  format: binary
+            encoding:
+              project:
+                contentType: application/zip
+      responses:
+        '200':
+          description: Successfully compiled the project to an Intel HEX file
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: Bad Request - Invalid or missing input data
+        '500':
+          description: Internal Server Error - An error occurred during the compilation process

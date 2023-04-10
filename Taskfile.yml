@@ -1,0 +1,29 @@
+version: '3'
+
+tasks:
+  generate-go-server:
+    desc: Generate Go server code from the OpenAPI specification
+    cmds:
+      - oapi-codegen -package api resources/openapi.yaml > internal/api/api.gen.go
+
+  docker-build:
+    desc: Build the Docker image for the Go application
+    cmds:
+      - docker build -t api-compiler:{{.TAG | default "latest"}} .
+
+  docker-run:
+    desc: Run the latest Docker image built by the docker-build task
+    deps: [docker-build]
+    cmds:
+      - docker run -p 8080:8080 --rm api-compiler:{{.TAG | default "latest"}}
+
+  docker-shell:
+    desc: Open an interactive shell in the Docker container generated from docker-run
+    deps: [docker-build]
+    cmds:
+      - docker run -it --entrypoint /bin/sh api-compiler:{{.TAG | default "latest"}}
+
+  docker-attach:
+    desc: Attach to a running container with the name "api-compiler" and run the "/bin/sh" command
+    cmds:
+      - docker exec -it $(docker ps --filter label=component=api-compiler -q) /bin/sh
