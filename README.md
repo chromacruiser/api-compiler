@@ -25,7 +25,7 @@ To use API Compiler, follow these simple steps:
 ## Tasks
 
 | Command         | Description                                                         |
-|-----------------|---------------------------------------------------------------------|
+|:--------------------|:---------------------------------------------------------------------|
 | generate-go-server | Generates Go server code from the OpenAPI specification located in `resources/openapi.yaml` and saves it to `internal/api/api.gen.go`. |
 | docker-build | Builds a Docker image named `api-compiler` using the latest Go application code. |
 | docker-run | Runs the latest Docker image built by the `docker-build` task and maps the container port `8080` to the host port `8080`. |
