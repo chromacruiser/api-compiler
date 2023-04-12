@@ -22,4 +22,4 @@ To use API Compiler, follow these simple steps:
 
 ## License
 
-API Compiler is released under the MIT license. See [LICENSE](./LICENSE) for more details.
+API Compiler is released under the GNU Affero General Public License v3.0 license. See [LICENSE](./LICENSE) for more details.
