@@ -21,28 +21,32 @@ var fixtures embed.FS
 type Handlers struct {
 }
 
+type ErrorResponse struct {
+	Message string `json:"message"`
+}
+
 func (h Handlers) ExampleCompile(ctx echo.Context) error {
 	// Create a temporary directory to store the project
 	tempDir, err := os.MkdirTemp("", "project-*")
 	if err != nil {
-		return ctx.String(http.StatusInternalServerError, err.Error())
+		return ctx.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
 	}
 	defer os.RemoveAll(tempDir)
 
 	// Copy fixture into temporary directory
 	err = copyFiles("fixtures/basic", tempDir)
 	if err != nil {
-		return ctx.String(http.StatusInternalServerError, err.Error())
+		return ctx.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
 	}
 
 	elf, err := avr.CompileAtmega328P(filepath.Join(tempDir, "main.c"))
 	if err != nil {
-		return ctx.String(http.StatusInternalServerError, err.Error())
+		return ctx.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
 	}
 
 	hex, err := avr.ConvertToHex(elf)
 	if err != nil {
-		return ctx.String(http.StatusInternalServerError, err.Error())
+		return ctx.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
 	}
 
 	return ctx.File(hex)
@@ -53,19 +57,19 @@ func (h Handlers) Compile(ctx echo.Context) error {
 
 	err := ctx.Bind(body)
 	if err != nil {
-		return ctx.NoContent(http.StatusBadRequest)
+		return ctx.JSON(http.StatusBadRequest, ErrorResponse{Message: "Bad request"})
 	}
 
 	// Read the project from the request body
 	project, err := body.Project.Bytes()
 	if err != nil {
-		return ctx.NoContent(http.StatusInternalServerError)
+		return ctx.JSON(http.StatusInternalServerError, ErrorResponse{Message: "Failed to read project from request body"})
 	}
 
 	// Create a temporary directory to store the project
 	tempDir, err := os.MkdirTemp("", "project-*")
 	if err != nil {
-		return ctx.NoContent(http.StatusInternalServerError)
+		return ctx.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
 	}
 	defer os.RemoveAll(tempDir)
 
@@ -74,16 +78,17 @@ func (h Handlers) Compile(ctx echo.Context) error {
 
 	elf, err := avr.CompileAtmega328P(filepath.Join(tempDir, "main.c"))
 	if err != nil {
-		return ctx.NoContent(http.StatusInternalServerError)
+		return ctx.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
 	}
 
 	hex, err := avr.ConvertToHex(elf)
 	if err != nil {
-		return ctx.NoContent(http.StatusInternalServerError)
+		return ctx.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
 	}
 
 	return ctx.File(hex)
 }
+
 
 func copyFiles(source string, destination string) error {
 	err := fs.WalkDir(fixtures, source, func(path string, d fs.DirEntry, err error) error {
