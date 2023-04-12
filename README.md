@@ -2,9 +2,8 @@
 
 API Compiler is an open-source HTTP service that exposes an endpoint for AVR code to be compiled. It is a tool for
 developers who are working on AVR-based microcontroller projects and need an easy way to compile their code.
-Features
 
-## API Compiler has the following features:
+## Features
 
 * Exposes a simple RESTful API for AVR code compilation
 * Supports the AVR-GCC compiler for compiling C and C++ code
