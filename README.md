@@ -11,8 +11,6 @@ Features
 * Accepts a ZIP file containing the AVR project to be compiled
 * Returns the compiled binary as an Intel HEX file
 * Provides an example endpoint (`/example/compile`) that returns an example Intel HEX file for testing purposes
-* Written in Go for efficient and fast performance
-* Easy to deploy and integrate with existing projects
 
 ## Usage
 
