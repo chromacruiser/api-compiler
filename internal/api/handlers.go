@@ -25,6 +25,20 @@ type ErrorResponse struct {
 	Message string `json:"message"`
 }
 
+func (h Handlers) compileProject(tempDir string) (string, error) {
+	elf, err := avr.CompileAtmega328P(filepath.Join(tempDir, "main.c"))
+	if err != nil {
+		return "", err
+	}
+
+	hex, err := avr.ConvertToHex(elf)
+	if err != nil {
+		return "", err
+	}
+
+	return hex, nil
+}
+
 func (h Handlers) ExampleCompile(ctx echo.Context) error {
 	// Create a temporary directory to store the project
 	tempDir, err := os.MkdirTemp("", "project-*")
@@ -39,12 +53,7 @@ func (h Handlers) ExampleCompile(ctx echo.Context) error {
 		return ctx.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
 	}
 
-	elf, err := avr.CompileAtmega328P(filepath.Join(tempDir, "main.c"))
-	if err != nil {
-		return ctx.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
-	}
-
-	hex, err := avr.ConvertToHex(elf)
+	hex, err := h.compileProject(tempDir)
 	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
 	}
@@ -76,19 +85,13 @@ func (h Handlers) Compile(ctx echo.Context) error {
 	// Unzip the project into the temporary directory
 	unzipProject(project, tempDir)
 
-	elf, err := avr.CompileAtmega328P(filepath.Join(tempDir, "main.c"))
-	if err != nil {
-		return ctx.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
-	}
-
-	hex, err := avr.ConvertToHex(elf)
+	hex, err := h.compileProject(tempDir)
 	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
 	}
 
 	return ctx.File(hex)
 }
-
 
 func copyFiles(source string, destination string) error {
 	err := fs.WalkDir(fixtures, source, func(path string, d fs.DirEntry, err error) error {
