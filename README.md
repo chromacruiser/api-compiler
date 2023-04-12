@@ -1,5 +1,7 @@
 # API Compiler
 
+![Go Build and Test](https://github.com/chromacruiser/api-compiler/actions/workflows/go.yml/badge.svg)
+
 API Compiler is an open-source HTTP service that exposes an endpoint for AVR code to be compiled. It is a tool for
 developers who are working on AVR-based microcontroller projects and need an easy way to compile their code.
 
