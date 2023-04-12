@@ -20,8 +20,6 @@ To use API Compiler, follow these simple steps:
 3. Send a POST request to the `/compile` endpoint with a ZIP file containing the AVR project to be compiled.
 4. The compiled binary as an Intel HEX file will be returned as the response to the API request.
 
-You can also test the API by sending a GET request to the `/example/compile` endpoint, which will return an example Intel HEX file.
-
 ## License
 
-API Compiler is released under the MIT license. See LICENSE for more details.
+API Compiler is released under the MIT license. See [LICENSE](./LICENSE) for more details.
